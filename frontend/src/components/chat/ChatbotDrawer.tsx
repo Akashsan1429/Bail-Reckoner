@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { chatApi } from '../../api/chatApi'
 import type { ChatResponse, CitationDto } from '../../types/api'
 import { CitationChip } from '../ui/CitationChip'
@@ -21,6 +22,7 @@ interface ChatbotDrawerProps {
 }
 
 export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({ isOpen, onClose, caseId }) => {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessageItem[]>([
     {
@@ -107,7 +109,7 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({ isOpen, onClose, c
             </div>
             <div>
               <h3 id="chatbot-header-title" className="text-base font-serif font-bold text-ink">
-                AI Legal Assistant
+                {t('chat.title')}
               </h3>
               <p className="text-[11px] font-mono text-ink-muted">
                 Statutory Context Grounded RAG
@@ -127,7 +129,7 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({ isOpen, onClose, c
         {/* Notice Strip */}
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-[11px] text-amber-900 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-          <span>The assistant answers questions using verified statutes. Official eligibility is calculated solely by the deterministic rule engine.</span>
+          <span>{t('chat.disclaimerNotice')}</span>
         </div>
 
         {/* Message Log */}
@@ -203,6 +205,41 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({ isOpen, onClose, c
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Quick Suggestion Chips */}
+        <div className="px-4 py-2 bg-surface-base border-t border-surface-deep flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
+          <span className="text-ink-muted font-mono font-semibold shrink-0">Prompts:</span>
+          {[
+            'Is Section 379 IPC bailable?',
+            'Explain Section 420 (BNS 318)',
+            'Undertrial limits under CrPC 436A',
+            'What documents are needed for bail?',
+          ].map((promptText, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => {
+                setInput(promptText)
+                // Auto trigger send
+                setTimeout(() => {
+                  chatApi.sendMessage({ sessionId, caseId, message: promptText })
+                    .then((res) => {
+                      if (res.sessionId) setSessionId(res.sessionId)
+                      setMessages((prev) => [
+                        ...prev,
+                        { id: Math.random().toString(), role: 'user', text: promptText },
+                        { id: Math.random().toString(), role: 'assistant', text: res.reply, citations: res.citations }
+                      ])
+                    })
+                    .catch((err) => console.error(err))
+                }, 50)
+              }}
+              className="px-2.5 py-1 rounded-full bg-white border border-surface-deep text-ink hover:bg-accent hover:text-white transition-colors shrink-0 shadow-2xs font-medium cursor-pointer"
+            >
+              {promptText}
+            </button>
+          ))}
+        </div>
+
         {/* Talk to Lawyer Action & Input Footer */}
         <div className="p-4 bg-surface-base border-t border-surface-deep space-y-3">
           <div className="flex items-center justify-between">
@@ -221,7 +258,7 @@ export const ChatbotDrawer: React.FC<ChatbotDrawerProps> = ({ isOpen, onClose, c
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about bail sections or procedures..."
+              placeholder={t('chat.placeholder')}
               className="flex-1 min-h-[44px] px-3.5 py-2.5 rounded-lg border border-surface-deep text-ink bg-white text-xs md:text-sm focus:outline-none focus:ring-2 focus:ring-accent"
               disabled={isLoading}
             />

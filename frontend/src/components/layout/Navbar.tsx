@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { LanguageSwitcher } from '../ui/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
 import { Scale, LogOut, Menu, X, Bot, PlusCircle, LayoutDashboard, FileText, BookOpen } from 'lucide-react'
 
 interface NavbarProps {
@@ -9,6 +10,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
+  const { t } = useTranslation()
   const { user, isAuthenticated, logout } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
@@ -17,14 +19,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
 
   const navLinks = isAuthenticated
     ? [
-        { path: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
-        { path: '/cases', label: 'Case Records', icon: <FileText className="w-4 h-4" /> },
-        { path: '/cases/new', label: 'Start Check', icon: <PlusCircle className="w-4 h-4" /> },
-        { path: '/laws', label: 'Law Library', icon: <BookOpen className="w-4 h-4" /> },
+        { path: '/dashboard', label: t('nav.dashboard'), icon: <LayoutDashboard className="w-4 h-4" /> },
+        { path: '/cases', label: t('nav.cases'), icon: <FileText className="w-4 h-4" /> },
+        { path: '/cases/new', label: t('nav.newCase'), icon: <PlusCircle className="w-4 h-4" /> },
+        { path: '/laws', label: t('nav.laws'), icon: <BookOpen className="w-4 h-4" /> },
       ]
     : [
-        { path: '/', label: 'Home', icon: <Scale className="w-4 h-4" /> },
-        { path: '/laws', label: 'Law Library', icon: <BookOpen className="w-4 h-4" /> },
+        { path: '/', label: t('nav.home'), icon: <Scale className="w-4 h-4" /> },
+        { path: '/laws', label: t('nav.laws'), icon: <BookOpen className="w-4 h-4" /> },
       ]
 
   return (
@@ -37,7 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
           </div>
           <div>
             <span className="font-serif font-bold text-lg md:text-xl text-ink tracking-tight block leading-tight">
-              Bail Reckoner
+              {t('app.title')}
             </span>
             <span className="text-[10px] font-mono text-ink-muted uppercase tracking-wider block">
               Digital Legal Aid System
@@ -75,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
             title="Open AI Legal Assistant"
           >
             <Bot className="w-4 h-4" />
-            <span>AI Assistant</span>
+            <span>{t('nav.chat')}</span>
           </button>
 
           {isAuthenticated ? (
@@ -83,15 +85,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
               <div className="text-right">
                 <span className="text-xs font-semibold text-ink block leading-tight">{user?.name}</span>
                 <span className="text-[10px] font-mono font-bold uppercase text-accent bg-surface-light px-1.5 py-0.5 rounded">
-                  {user?.role?.replace('_', ' ')}
+                  {user?.role ? t(`roles.${user.role}`, { defaultValue: user.role.replace('_', ' ') }) : ''}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={logout}
                 className="p-2 rounded-lg text-ink-muted hover:text-verdict-not-eligible hover:bg-surface-light transition-colors min-h-[44px] cursor-pointer"
-                title="Sign Out"
-                aria-label="Sign Out"
+                title={t('nav.logout')}
+                aria-label={t('nav.logout')}
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -102,13 +104,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
                 to="/login"
                 className="px-4 py-2 text-xs font-semibold text-accent hover:bg-surface-light rounded-lg transition-colors min-h-[44px] inline-flex items-center"
               >
-                Sign In
+                {t('nav.login')}
               </Link>
               <Link
                 to="/register"
                 className="px-4 py-2 text-xs font-semibold bg-accent text-white hover:bg-accent-hover rounded-lg transition-colors shadow-xs min-h-[44px] inline-flex items-center"
               >
-                Register
+                {t('nav.register')}
               </Link>
             </div>
           )}
@@ -156,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-accent bg-surface-light"
           >
             <Bot className="w-5 h-5" />
-            <span>AI Legal Assistant</span>
+            <span>{t('nav.chat')}</span>
           </button>
 
           {isAuthenticated ? (
@@ -171,7 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold text-verdict-not-eligible hover:bg-red-50"
               >
                 <LogOut className="w-5 h-5" />
-                <span>Sign Out</span>
+                <span>{t('nav.logout')}</span>
               </button>
             </div>
           ) : (
@@ -181,14 +183,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenChat }) => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full py-2.5 text-center text-sm font-semibold border border-accent text-accent rounded-lg"
               >
-                Sign In
+                {t('nav.login')}
               </Link>
               <Link
                 to="/register"
                 onClick={() => setMobileMenuOpen(false)}
                 className="w-full py-2.5 text-center text-sm font-semibold bg-accent text-white rounded-lg"
               >
-                Register
+                {t('nav.register')}
               </Link>
             </div>
           )}

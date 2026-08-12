@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import type { CreateCaseRequest } from '../../types/api'
 import { Input } from '../ui/Input'
 import { Select } from '../ui/Select'
-import { Button } from '../ui/Button'
 import { DisclaimerStrip } from '../ui/DisclaimerStrip'
 import { Check, ArrowRight, ArrowLeft, Save, RotateCcw } from 'lucide-react'
 
@@ -53,7 +52,6 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [draftSavedToast, setDraftSavedToast] = useState(false)
 
-  // Auto-save draft to localStorage whenever formData changes
   useEffect(() => {
     localStorage.setItem(DRAFT_KEY, JSON.stringify(formData))
   }, [formData])
@@ -106,7 +104,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
     e.preventDefault()
     if (!validateStep(currentStep)) return
     await onSubmit(formData)
-    localStorage.removeItem(DRAFT_KEY) // Clear draft on successful evaluation
+    localStorage.removeItem(DRAFT_KEY)
   }
 
   const steps = [
@@ -118,26 +116,26 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
   ]
 
   return (
-    <div className="bg-white border border-surface-deep rounded-2xl p-6 md:p-8 shadow-sm space-y-8 max-w-4xl mx-auto">
+    <div className="bg-white border border-[#EBE5F5] rounded-3xl p-6 md:p-8 shadow-sm space-y-8 max-w-4xl mx-auto">
       {/* Stepper Header Progress */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl md:text-2xl font-serif font-bold text-ink">
+          <h2 className="text-xl md:text-2xl font-bold text-[#1F1D36]">
             Bail Eligibility Case Assessment Form
           </h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={handleManualSave}
-              className="text-xs text-accent hover:underline flex items-center gap-1 font-semibold cursor-pointer"
+              className="text-xs text-[#403D88] hover:underline flex items-center gap-1 font-bold cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" /> Save Draft
             </button>
-            <span className="text-surface-deep">|</span>
+            <span className="text-[#EBE5F5]">|</span>
             <button
               type="button"
               onClick={handleResetDraft}
-              className="text-xs text-ink-muted hover:text-verdict-not-eligible flex items-center gap-1 cursor-pointer"
+              className="text-xs text-[#6B6888] hover:text-red-600 flex items-center gap-1 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" /> Reset
             </button>
@@ -152,17 +150,17 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
             return (
               <div key={step.number} className="space-y-1.5">
                 <div
-                  className={`h-2 rounded-full transition-colors ${
+                  className={`h-2 rounded-full transition-all ${
                     isCompleted
-                      ? 'bg-accent'
+                      ? 'bg-gradient-to-r from-[#F8B2B2] via-[#AF719D] to-[#8B639B]'
                       : isActive
-                      ? 'bg-accent/60'
-                      : 'bg-surface-deep'
+                      ? 'bg-[#403D88]'
+                      : 'bg-[#EBE5F5]'
                   }`}
                 />
                 <span
                   className={`text-[11px] font-semibold block text-center truncate ${
-                    isActive ? 'text-accent font-bold' : 'text-ink-muted'
+                    isActive ? 'text-[#403D88] font-bold' : 'text-[#6B6888]'
                   }`}
                 >
                   {step.title}
@@ -174,7 +172,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
       </div>
 
       {draftSavedToast && (
-        <div className="bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs p-3 rounded-lg flex items-center gap-2">
+        <div className="bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs p-3 rounded-2xl flex items-center gap-2">
           <Check className="w-4 h-4 text-emerald-600" />
           <span>Draft state safely preserved on local device.</span>
         </div>
@@ -185,7 +183,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         {/* STEP 1: CHARGES */}
         {currentStep === 1 && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            <h3 className="text-lg font-serif font-semibold text-ink border-b border-surface-deep pb-2">
+            <h3 className="text-lg font-bold text-[#1F1D36] border-b border-[#EBE5F5] pb-2">
               Step 1: Statutory Charge Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -239,7 +237,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         {/* STEP 2: CUSTODY */}
         {currentStep === 2 && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            <h3 className="text-lg font-serif font-semibold text-ink border-b border-surface-deep pb-2">
+            <h3 className="text-lg font-bold text-[#1F1D36] border-b border-[#EBE5F5] pb-2">
               Step 2: Under-trial Custody Period
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -269,7 +267,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         {/* STEP 3: PERSONAL TIES */}
         {currentStep === 3 && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            <h3 className="text-lg font-serif font-semibold text-ink border-b border-surface-deep pb-2">
+            <h3 className="text-lg font-bold text-[#1F1D36] border-b border-[#EBE5F5] pb-2">
               Step 3: Personal Ties & Flight Risk
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -326,7 +324,7 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         {/* STEP 4: EVIDENCE RISK & PROCEDURAL */}
         {currentStep === 4 && (
           <div className="space-y-4 animate-in fade-in duration-200">
-            <h3 className="text-lg font-serif font-semibold text-ink border-b border-surface-deep pb-2">
+            <h3 className="text-lg font-bold text-[#1F1D36] border-b border-[#EBE5F5] pb-2">
               Step 4: Evidence Tampering Risk & Procedural Readiness
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -398,18 +396,18 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         {/* STEP 5: REVIEW */}
         {currentStep === 5 && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            <h3 className="text-lg font-serif font-semibold text-ink border-b border-surface-deep pb-2">
+            <h3 className="text-lg font-bold text-[#1F1D36] border-b border-[#EBE5F5] pb-2">
               Step 5: Review Assessment Input
             </h3>
 
-            <div className="bg-surface-base border border-surface-deep rounded-xl p-4 text-xs md:text-sm space-y-3 font-sans">
+            <div className="bg-[#F8F7FC] border border-[#EBE5F5] rounded-2xl p-4 text-xs md:text-sm space-y-3">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <div><span className="text-ink-muted block">Case Number:</span><strong>{formData.caseNumber}</strong></div>
-                <div><span className="text-ink-muted block">FIR Number:</span><strong>{formData.firNumber || 'N/A'}</strong></div>
-                <div><span className="text-ink-muted block">Section:</span><strong>{formData.offenceSection}</strong></div>
-                <div><span className="text-ink-muted block">Custody Date:</span><strong>{formData.custodyStartDate}</strong></div>
-                <div><span className="text-ink-muted block">First Time Prisoner:</span><strong>{formData.firstTimeOffender ? 'Yes' : 'No'}</strong></div>
-                <div><span className="text-ink-muted block">Employment:</span><strong>{formData.employmentStatus}</strong></div>
+                <div><span className="text-[#6B6888] block">Case Number:</span><strong>{formData.caseNumber}</strong></div>
+                <div><span className="text-[#6B6888] block">FIR Number:</span><strong>{formData.firNumber || 'N/A'}</strong></div>
+                <div><span className="text-[#6B6888] block">Section:</span><strong>{formData.offenceSection}</strong></div>
+                <div><span className="text-[#6B6888] block">Custody Date:</span><strong>{formData.custodyStartDate}</strong></div>
+                <div><span className="text-[#6B6888] block">First Time Prisoner:</span><strong>{formData.firstTimeOffender ? 'Yes' : 'No'}</strong></div>
+                <div><span className="text-[#6B6888] block">Employment:</span><strong>{formData.employmentStatus}</strong></div>
               </div>
             </div>
 
@@ -418,23 +416,36 @@ export const CaseFormStepper: React.FC<CaseFormStepperProps> = ({ onSubmit, isLo
         )}
 
         {/* Navigation Control Buttons */}
-        <div className="flex items-center justify-between pt-4 border-t border-surface-deep">
+        <div className="flex items-center justify-between pt-4 border-t border-[#EBE5F5]">
           {currentStep > 1 ? (
-            <Button type="button" variant="outline" onClick={handleBack} disabled={isLoading}>
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back
-            </Button>
+            <button
+              type="button"
+              onClick={handleBack}
+              disabled={isLoading}
+              className="px-5 py-2.5 rounded-xl border border-[#EBE5F5] bg-white text-[#1F1D36] hover:bg-[#F8F7FC] text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </button>
           ) : (
             <div />
           )}
 
           {currentStep < 5 ? (
-            <Button type="button" variant="primary" onClick={handleNext}>
-              Next Step <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <button
+              type="button"
+              onClick={handleNext}
+              className="px-5 py-2.5 rounded-xl bg-[#403D88] hover:bg-[#312E6B] text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
+            >
+              Next Step <ArrowRight className="w-4 h-4" />
+            </button>
           ) : (
-            <Button type="submit" variant="primary" size="lg" isLoading={isLoading}>
-              <Check className="w-5 h-5 mr-2" /> Submit & Evaluate Verdict
-            </Button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#F8B2B2] via-[#AF719D] to-[#8B639B] hover:opacity-95 text-white text-xs font-extrabold shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <Check className="w-5 h-5" /> Submit & Evaluate Verdict
+            </button>
           )}
         </div>
       </form>

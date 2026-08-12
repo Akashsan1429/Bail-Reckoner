@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { caseApi } from '../../api/caseApi'
 import type { CaseDto, VerdictDto } from '../../types/api'
 import { SignatureRulingCard } from '../../components/verdict/SignatureRulingCard'
-import { Button } from '../../components/ui/Button'
 import { ArrowLeft, Play, AlertCircle, RefreshCw } from 'lucide-react'
 
 interface VerdictPageProps {
@@ -62,61 +61,66 @@ export const VerdictPage: React.FC<VerdictPageProps> = ({ onOpenChat }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent" />
-        <span className="text-sm font-mono text-ink-muted">Loading Decision Assessment...</span>
+      <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 rounded-full border-4 border-[#403D88] border-t-[#F8B2B2] animate-spin" />
+        <span className="text-xs font-semibold text-[#6B6888]">Loading decision assessment trace...</span>
       </div>
     )
   }
 
   if (error || !caseData) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-6 bg-white border border-surface-deep rounded-2xl text-center space-y-4 shadow-sm">
-        <AlertCircle className="w-10 h-10 text-verdict-not-eligible mx-auto" />
-        <h2 className="text-xl font-serif font-bold text-ink">Assessment Record Not Found</h2>
-        <p className="text-xs text-ink-muted">{error || 'The requested case record could not be retrieved.'}</p>
-        <Button variant="outline" onClick={() => navigate('/cases')}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Case Records
-        </Button>
+      <div className="max-w-xl mx-auto my-12 p-8 bg-white border border-[#EBE5F5] rounded-3xl text-center space-y-4 shadow-sm">
+        <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
+        <h2 className="text-lg font-bold text-[#1F1D36]">Assessment Record Not Found</h2>
+        <p className="text-xs text-[#6B6888]">{error || 'The requested case record could not be retrieved.'}</p>
+        <button
+          onClick={() => navigate('/cases')}
+          className="px-4 py-2 rounded-xl bg-[#403D88] text-white text-xs font-bold hover:bg-[#312E6B] transition-all inline-flex items-center gap-2 cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to Case Records
+        </button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6 py-6 max-w-5xl mx-auto px-4">
-      {/* Top Header Navigation */}
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Navigation & Controls */}
       <div className="flex items-center justify-between">
         <Link
           to="/cases"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:underline min-h-[44px]"
+          className="inline-flex items-center gap-2 text-xs font-bold text-[#403D88] hover:underline"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Case Records
         </Link>
 
         {verdict && (
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={handleEvaluateNow}
-            isLoading={isEvaluating}
-            className="text-xs"
+            disabled={isEvaluating}
+            className="px-3.5 py-2 rounded-xl bg-white border border-[#EBE5F5] text-[#403D88] text-xs font-bold hover:bg-[#F8F7FC] transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
-            <RefreshCw className="w-3.5 h-3.5 mr-1" /> Re-evaluate Rules
-          </Button>
+            <RefreshCw className={`w-3.5 h-3.5 ${isEvaluating ? 'animate-spin' : ''}`} /> Re-evaluate Rules
+          </button>
         )}
       </div>
 
       {verdict ? (
         <SignatureRulingCard verdict={verdict} caseData={caseData} onOpenChat={onOpenChat} />
       ) : (
-        <div className="bg-white border-2 border-surface-deep rounded-2xl p-8 text-center space-y-4 max-w-lg mx-auto shadow-sm">
-          <h2 className="text-xl font-serif font-bold text-ink">Case Not Evaluated Yet</h2>
-          <p className="text-xs text-ink-muted">
+        <div className="bg-white border border-[#EBE5F5] rounded-3xl p-8 text-center space-y-4 max-w-lg mx-auto shadow-sm">
+          <h2 className="text-lg font-bold text-[#1F1D36]">Case Not Evaluated Yet</h2>
+          <p className="text-xs text-[#6B6888]">
             Case <strong>{caseData.caseNumber}</strong> has been saved as draft but has not run through the statutory rule engine.
           </p>
-          <Button variant="primary" size="lg" onClick={handleEvaluateNow} isLoading={isEvaluating}>
-            <Play className="w-4 h-4 mr-2" /> Run Eligibility Rule Engine
-          </Button>
+          <button
+            onClick={handleEvaluateNow}
+            disabled={isEvaluating}
+            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-[#F8B2B2] via-[#AF719D] to-[#8B639B] text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-all inline-flex items-center gap-2 cursor-pointer"
+          >
+            <Play className="w-4 h-4" /> Run Eligibility Rule Engine
+          </button>
         </div>
       )}
     </div>

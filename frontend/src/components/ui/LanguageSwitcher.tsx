@@ -7,22 +7,31 @@ export const LanguageSwitcher: React.FC<{ className?: string }> = ({ className =
 
   const currentLanguage = i18n.language || 'en'
 
-  const toggleLanguage = () => {
-    const nextLang = currentLanguage.startsWith('hi') ? 'en' : 'hi'
-    i18n.changeLanguage(nextLang)
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLang = e.target.value
+    i18n.changeLanguage(selectedLang)
+    localStorage.setItem('i18nextLng', selectedLang)
+  }
+
+  const getActiveCode = () => {
+    if (currentLanguage.startsWith('ta')) return 'ta'
+    if (currentLanguage.startsWith('hi')) return 'hi'
+    return 'en'
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggleLanguage}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-surface-deep bg-white hover:bg-surface-light text-ink text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-accent min-h-[44px] ${className}`}
-      aria-label={`Current language: ${currentLanguage.toUpperCase()}. Click to switch to ${
-        currentLanguage.startsWith('hi') ? 'English' : 'Hindi (हिंदी)'
-      }`}
-    >
-      <Languages className="w-4 h-4 text-accent" aria-hidden="true" />
-      <span>{currentLanguage.startsWith('hi') ? 'हिंदी (HI)' : 'English (EN)'}</span>
-    </button>
+    <div className={`relative inline-flex items-center rounded-lg border border-surface-deep bg-white px-2 py-1 shadow-2xs hover:border-accent transition-colors ${className}`}>
+      <Languages className="w-4 h-4 text-accent mr-1.5 shrink-0" aria-hidden="true" />
+      <select
+        value={getActiveCode()}
+        onChange={handleLanguageChange}
+        className="bg-transparent text-xs font-semibold text-ink focus:outline-none cursor-pointer pr-1 py-1"
+        aria-label="Select Application Language"
+      >
+        <option value="en">English (EN)</option>
+        <option value="ta">தமிழ் (TA)</option>
+        <option value="hi">हिंदी (HI)</option>
+      </select>
+    </div>
   )
 }
